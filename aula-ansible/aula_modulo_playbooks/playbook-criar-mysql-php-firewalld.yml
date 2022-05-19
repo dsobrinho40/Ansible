@@ -1,0 +1,58 @@
+---
+    - name: install and start Apache HTTPD
+      hosts: web
+      tasks:
+       - name: httpd package is present
+         apt:
+          name:
+            - apache2
+            - php
+            - php-mysql
+            - firewalld
+            - mysql-server
+          state: latest
+    
+       - name: correct index is present
+         copy: 
+          src: files/index.php
+          dest: /var/www/html/index.php
+    
+       - name: Enable service apache 2
+         service: 
+          name: apache2
+          state: started
+          enabled: true 
+
+       - name: Enable  service mysql
+         service:
+           name: mysql
+           enabled: true
+  
+       - name: Enable firewalld and running
+         service:
+           name: firewalld
+           state: started
+           enabled: true
+    
+       - name: Firewalld permits http service
+         firewalld:
+           port: 80/tcp
+           permanent: true
+           state: enabled
+           immediate: yes
+    
+       - name: Remove file index.html
+         file:
+           path: /var/www/html/index.html
+           state: absent  
+
+       - name: Verify if exist the line FUNCIONOU!!!! COPIOU!!!!
+         lineinfile:
+           path: /var/www/html/index.php
+           line: 'Funcionou!!!! Copiou!!!!'
+           state: present
+
+       - name: Connect to internet web server
+         uri: 
+           url: http://192.168.15.34:80
+           status_code: 200

@@ -1,0 +1,54 @@
+---
+    - name: install and start Apache HTTPD
+      hosts: web
+      vars_files:
+        - vars/package.yml
+
+      tasks:
+       - name: Install {{http_server}} {{php}} firewalld and mysql-server
+         apt:
+          name:
+            - "{{http_server}}"
+            - "{{php}}"
+            - php-mysql
+            - firewalld
+            - mysql-server
+          state: latest
+       #  register: install_results
+       #- debug: var=install_results
+    
+       - name: correct index is present
+         copy: 
+          src: files/index.php
+          dest: /var/www/html/index.php
+    
+       - name: Enable services 
+         service: 
+           name: "{{item.name}}"
+           state: "{{item.state}}"
+           enabled: "{{item.enabled}}"
+         loop: "{{servicos_iniciados}}"
+
+       - name: Firewalld permits http service
+         firewalld:
+           port: 80/tcp
+           permanent: true
+           state: enabled
+           immediate: yes
+    
+       - name: Remove file index.html
+         file:
+           path: /var/www/html/index.html
+           state: absent  
+
+       - name: Verify if exist the line {{contain_line}}
+         lineinfile:
+           path: /var/www/html/index.php
+           #line: 'Funcionou!!!! Copiou!!!!'
+           line: "{{contain_line}}"
+           state: present
+
+       - name: Connect to internet web server {{ansible_host}}
+         uri: 
+           url: http://{{ansible_host}}:80
+           status_code: 200

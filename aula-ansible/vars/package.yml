@@ -1,0 +1,15 @@
+http_server: apache2
+php: php
+
+servicos_iniciados:
+  - name: firewalld
+    state: started
+    enabled: true
+
+  - name: apache2
+    state: started
+    enabled: true
+    
+  - name: mysql
+    state: started
+    enabled: true

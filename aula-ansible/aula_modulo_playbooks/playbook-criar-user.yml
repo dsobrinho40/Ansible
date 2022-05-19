@@ -1,0 +1,15 @@
+---
+- name: configurar usuario
+  hosts: web
+  tasks:
+    - name: usuario nooob com uid 55555
+      user:
+        name: nooob
+        uid: 55555
+        state: present  
+    - name: usuario jenkins com uid 4001
+      user:
+        name: jenkins
+        uid: 4001
+        state: present
+
