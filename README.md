@@ -1,7 +1,6 @@
-# Ansible
-Ansible_Class
+## Anslible Labs
 
-## Ansible_Class_Lab
+Exemplos de scripts de playbooks de aulas que tive para automatizacao.
 
 
 
